@@ -21,8 +21,10 @@ int combination[8][3] = {
 void drawBoard(int playAgain);
 void markBoard(char mark, int position);
 int checkRules(int block);
+char checkRulesHelper(char player);
 void play(void);
 char checkForWin(void);
+
 
 void drawBoard(int playAgain){
 
@@ -55,10 +57,12 @@ void drawBoard(int playAgain){
     }
 }
 
+
 void markBoard(char mark, int position){
     square[position] = mark;
     drawBoard(0);
 }
+
 
 int checkRules(int block){
 
@@ -93,26 +97,22 @@ int checkRules(int block){
 
 }
 
-void play(void){
+
+char checkRulesHelper(char player){
 
     int position;
-    char playAgain;
-    drawBoard(1);
-
     char whoWon;
 
-     while (1)
+    if (checkRules(-1) == 2)
     {
+        whoWon = 'D';
+    }
 
-        if (checkRules(-1) == 2)
-        {
-            whoWon = 'D';
-            break;
-        }
-
+    if (whoWon != 'D' && player != 'N')
+    {
         while (1)
         {
-            printf("%c's turn: ", x_o[0]);
+            printf("%c's turn: ", player);
             scanf("%i", &position);
 
             if (checkRules(position) == 1)
@@ -124,48 +124,59 @@ void play(void){
                 break;
         }
 
-        markBoard(x_o[0], position);
-        if (checkForWin() == x_o[0])
+        markBoard(player, position);
+        if (checkForWin() == player)
         {
-            whoWon = x_o[0];
+            whoWon = player;
+        }
+    }
+    return whoWon;
+}
+
+
+void play(void){
+
+    char playAgain;
+    drawBoard(1);
+
+    char winner;
+
+     while (1)
+    {
+
+         if (checkRulesHelper('N') == 'D')
+         {
+             winner = checkRulesHelper('N');
+             break;
+         }
+
+         char player1 = checkRulesHelper(x_o[0]);
+         if (player1 == x_o[0])
+         {
+             winner = player1;
+             break;
+         }
+
+        if (checkRulesHelper('N') == 'D')
+        {
+            winner = checkRulesHelper('N');
             break;
         }
 
-//----------------------------------------------------//
+        char player2 = checkRulesHelper(x_o[1]);
+        if (player2 == x_o[1])
+        {
+            winner = player2;
+            break;
+        }
 
-         if (checkRules(-1) == 2)
-         {
-             whoWon = 'D';
-             break;
-         }
-
-         while (1)
-         {
-             printf("%c's turn: ", x_o[1]);
-             scanf("%i", &position);
-
-             if (checkRules(position) == 1)
-             {
-                 printf("\nInvalid input!\n\n");
-                 continue;
-             }
-             else
-                 break;
-         }
-
-         markBoard(x_o[1], position);
-         if (checkForWin() == x_o[1])
-         {
-             whoWon = x_o[1];
-             break;
-         }
     }
 
-     if (whoWon == x_o[0] || whoWon == x_o[1])
+     if (winner == x_o[0] || winner == x_o[1])
      {
-         printf("\n%c wins!\n\n", whoWon);
+         printf("\n%c wins!\n\n", winner);
      }
-     else if (whoWon == 'D')
+     else if (winner == 'D')
      {
          printf("The match is a draw!\n");
      }
@@ -186,6 +197,7 @@ void play(void){
      else
          printf("\nBye!\n\n");
 }
+
 
 char checkForWin(void){
 
